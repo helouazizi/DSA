@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -15,6 +16,12 @@ import (
 type Room struct {
 	//Name string
 	X, Y string
+}
+
+type AntMove struct {
+	Ant   int
+	Room  string
+	Steps []string
 }
 
 // lets reprasent our farm of ants as struct with it's properties
@@ -154,40 +161,33 @@ func (F *Farm) ReadFile(fileName string) error {
 }
 
 func (F *Farm) Path_Finder() [][]string {
-	var allPaths [][]string
-	var currentPath []string
-	visited := make(map[string]bool)
+	var paths [][]string
+	queue := [][]string{{F.StartRoom}}
+	visited := map[string]bool{}
 
-	var dfs func(currentRoom string)
-	dfs = func(currentRoom string) {
-		// Mark the current room as visited
-		visited[currentRoom] = true
-		currentPath = append(currentPath, currentRoom)
+	for len(queue) > 0 {
+		path := queue[0]
+		queue = queue[1:]
+		room := path[len(path)-1]
 
-		// If we reached the end room, save the current path
-		if currentRoom == F.EndRoom {
-			// Make a copy of the current path and add it to allPaths
-			pathCopy := make([]string, len(currentPath))
-			copy(pathCopy, currentPath)
-			allPaths = append(allPaths, pathCopy)
-		} else {
-			// Explore all linked rooms
-			for _, nextRoom := range F.Links[currentRoom] {
-				if !visited[nextRoom] {
-					dfs(nextRoom)
-				}
+		if room == F.EndRoom {
+			if notcollesion(paths, path) {
+				paths = append(paths, path)
+				continue
 			}
 		}
 
-		// Backtrack: unmark the current room and remove it from the current path
-		visited[currentRoom] = false
-		currentPath = currentPath[:len(currentPath)-1]
+		visited[room] = true
+		for _, neighbor := range F.Links[room] {
+			if !visited[neighbor] {
+				newPath := append([]string{}, path...)
+				newPath = append(newPath, neighbor)
+				queue = append(queue, newPath)
+			}
+		}
 	}
 
-	// Start DFS from the start room
-	dfs(F.StartRoom)
-
-	return allPaths
+	return paths
 
 }
 
@@ -200,7 +200,7 @@ func contains(path []string, connection string)ool {
 	}
 	return false
 }*/
-/*
+
 func notcollesion(result [][]string, path []string) bool {
 	for _, oldpath := range result {
 		minlen := len(oldpath)
@@ -217,4 +217,50 @@ func notcollesion(result [][]string, path []string) bool {
 
 	}
 	return true
-}*/
+}
+
+func (c *Farm) DistributeAnts(paths [][]string) {
+	sort.Slice(paths, func(i, j int) bool {
+		return len(paths[i]) < len(paths[j])
+	})
+
+	pathLoad := make([]int, len(paths))
+	assignments := map[int][]AntMove{}
+
+	for ant := 1; ant <= c.Ants; ant++ {
+		minLoadIndex := 0
+		for i, load := range pathLoad {
+			if load+len(paths[i]) < pathLoad[minLoadIndex]+len(paths[minLoadIndex]) {
+				minLoadIndex = i
+			}
+		}
+		pathLoad[minLoadIndex]++
+		assignments[minLoadIndex] = append(assignments[minLoadIndex], AntMove{
+			Ant:   ant,
+			Room:  paths[minLoadIndex][0],
+			Steps: paths[minLoadIndex],
+		})
+	}
+
+	// Simulate turns
+	turn := 0
+	for {
+		active := false
+		fmt.Printf("Turn %d:\n", turn+1)
+		for i, moves := range assignments {
+			for j := range moves {
+				if len(moves[j].Steps) > 1 {
+					moves[j].Steps = moves[j].Steps[1:]
+					fmt.Printf("L%d-%s ", moves[j].Ant, moves[j].Steps[0])
+					active = true
+				}
+			}
+			assignments[i] = moves
+		}
+		fmt.Println()
+		if !active {
+			break
+		}
+		turn++
+	}
+}
