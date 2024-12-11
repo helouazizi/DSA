@@ -28,15 +28,14 @@ func main() {
 	}
 
 	// fmt.Println(farm.Ants)
-	
+
 	//fmt.Println(farm.StartRoom)
-	 //fmt.Println(farm.EndRoom)
+	//fmt.Println(farm.EndRoom)
 	// fmt.Println(farm.Rooms)
-	
 
 	paths := farm.Path_Finder()
 	fmt.Println(paths)
 	//fmt.Println(farm.Links)
-	farm.DistributeAnts(paths)
+	//farm.DistributeAnts(paths)
 	fmt.Println("good data")
 }

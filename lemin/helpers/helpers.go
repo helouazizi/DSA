@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"sort"
 	"strconv"
 	"strings"
 )
@@ -156,50 +155,48 @@ func (F *Farm) ReadFile(fileName string) error {
 	if exist != 3 {
 		return errors.New("no start or end room")
 	}
-
+	fmt.Println("file reded")
 	return nil
 }
 
 func (F *Farm) Path_Finder() [][]string {
-	var paths [][]string
-	queue := [][]string{{F.StartRoom}}
-	visited := map[string]bool{}
+	stack := [][]string{{F.StartRoom}}
+	var result [][]string
 
-	for len(queue) > 0 {
-		path := queue[0]
-		queue = queue[1:]
-		room := path[len(path)-1]
+	for len(stack) > 0 {
+		// we wre using the stack here like the que data structure
+		path := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+		node := path[len(path)-1]
 
-		if room == F.EndRoom {
-			if notcollesion(paths, path) {
-				paths = append(paths, path)
-				continue
+		if node == F.EndRoom {
+			if notcollesion(result, path) {
+				result = append(result, path)
 			}
+			continue
 		}
 
-		visited[room] = true
-		for _, neighbor := range F.Links[room] {
-			if !visited[neighbor] {
+		for _, neighbor := range F.Links[node] {
+			if !contains(path, neighbor) {
 				newPath := append([]string{}, path...)
 				newPath = append(newPath, neighbor)
-				queue = append(queue, newPath)
+				stack = append(stack, newPath)
 			}
 		}
 	}
 
-	return paths
+	return result
 
 }
 
-/*
-func contains(path []string, connection string)ool {
+func contains(path []string, connection string) bool {
 	for _, connected := range path {
 		if connected == connection {
 			return true
 		}
 	}
 	return false
-}*/
+}
 
 func notcollesion(result [][]string, path []string) bool {
 	for _, oldpath := range result {
@@ -219,6 +216,7 @@ func notcollesion(result [][]string, path []string) bool {
 	return true
 }
 
+/*
 func (c *Farm) DistributeAnts(paths [][]string) {
 	sort.Slice(paths, func(i, j int) bool {
 		return len(paths[i]) < len(paths[j])
@@ -263,4 +261,4 @@ func (c *Farm) DistributeAnts(paths [][]string) {
 		}
 		turn++
 	}
-}
+}*/
