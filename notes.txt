@@ -1,7 +1,11 @@
-create a slice using a composite literal ????????????????????????
-craete your own sqrt ???????????????????????????????????????????????
-Newton-Raphson method (also known as the Heron's method) 
-Fast Inverse Square Root (Quake III Algorithm)
-Babylonian Method
-Binary Search Method 
+create a slice using a composite literal 
+/////////////////////////////////////////////////////////////
+craete your own sqrt ??? [
+    Newton-Raphson method (also known as the Heron's method) 
+    Fast Inverse Square Root (Quake III Algorithm)
+    Babylonian Method
+    Binary Search Method ]
+////////////////////////////////////////////////////////////
+craete your own itoa and atoi  
+/////////////////////////////////////////////////////////////
 
