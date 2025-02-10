@@ -39,7 +39,7 @@ func main() {
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
+	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		w.Write([]byte("method not allowed\n"))
 		return
@@ -48,7 +48,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	username := r.FormValue("username")
 	password := r.FormValue("password")
-	fmt.Println(username, password)
+	//fmt.Println(username, password)
 	db, err := New_DB()
 	if err != nil {
 		fmt.Println(err)
@@ -63,13 +63,22 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("internal server error\n"))
 		return
 	}
-	var userName string
-	err = db.QueryRow("SELECT username FROM users WHERE username = ?", username).Scan(&userName)
+
+	sqlres, err := db.Query("SELECT * FROM users WHERE username = ?", username)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("internal server error\n"))
 		return
+	}
+	defer sqlres.Close()
+	var user , pass string
+	for sqlres.Next() {
+		err := sqlres.Scan(&user,&pass)
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println(user)
 	}
 	w.Write([]byte("hello from server\n"))
 }
