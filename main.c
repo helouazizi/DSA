@@ -1,9 +1,23 @@
-#include<stdio.h>
+#include <stdio.h>
 
-int main(){
-    char txt[] = "ha";
-    printf("%s it size: %li\n",txt,sizeof(txt));
-    int time = 19;
-    (time < 20) ? printf("too young\n"): printf("yes for age\n");
-    return 0 ;
+int sum(int h);
+
+int main()
+{
+    int x = sum(10);
+    printf("%d\n",x);
 };
+
+
+
+int sum(int h)
+{
+    if (h > 0)
+    {
+        return h+ sum(h - 1);
+    }
+    else
+    {
+        return 0;
+    }
+}
