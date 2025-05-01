@@ -12,31 +12,23 @@ func main() {
 	s1 := os.Args[1]
 	s2 := os.Args[2]
 
-	if s1 == "" || isHiden(s1, s2) {
-		fmt.Println(1)
-	} else {
-		fmt.Println(0)
-	}
+	isHiden(s1, s2)
 }
 
-func isHiden(s1, s2 string) bool {
-	indexs := []int{}
-	isSorted := true
-	for _, s := range s1 {
-		one := true
-		for j, ss := range s2 {
-			if s == ss && one {
-				one = false
-				indexs = append(indexs, j)
-			}
+func isHiden(s1, s2 string)  {
+	if s1 == "" {
+		fmt.Println(1)
+	}
+
+	j := 0
+	for i := 0; i < len(s2) && j < len(s1); i++ {
+		if s1[j] == s2[i] {
+			j++
 		}
 	}
-	fmt.Println(indexs)
-	for i := range len(indexs)-1 {
-		// fmt.Println(indexs[i] > indexs[i+1])
-		if indexs[i] > indexs[i+1] {
-			return false
-		}
+	if j == len(s1){
+		fmt.Println(1)
+	}else{
+		fmt.Println(0)
 	}
-	return isSorted
 }
