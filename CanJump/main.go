@@ -14,6 +14,7 @@ func main() {
 	input3 := []uint{0}
 	fmt.Println(CanJump(input3))
 }
+// lest code 
 
 func CanJump(input []uint) bool {
 	if len(input) == 0 {
