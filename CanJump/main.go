@@ -26,7 +26,8 @@ func CanJump(input []uint) bool {
 	}
 
 	n:= len(input)
-	
+	// Create a dp array to store the maximum reachable index at each position
+
 
 	return false
 
