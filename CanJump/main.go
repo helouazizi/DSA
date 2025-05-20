@@ -25,9 +25,24 @@ func CanJump(input []uint) bool {
 		return true
 	}
 
-	n:= len(input)
-	// Create a dp array to store the maximum reachable index at each position
+	n := len(input)
+	visited := make([]bool, n)
+	queue := []int{0}
+	visited[0] = true
+	// stope give me seggustion until i finish
+	for len(queue) > 0 {
+		index := queue[0]
+		queue = queue[1:]
+		if index+int(input[index]) == n-1 {
+			return true
+		}
 
+		next := index + int(input[index])
+		if next < n && !visited[next]{
+			visited[next] = true
+			queue = append(queue, next)
+		}
+	}
 
 	return false
 
