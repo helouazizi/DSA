@@ -14,7 +14,8 @@ func main() {
 	input3 := []uint{0}
 	fmt.Println(CanJump(input3))
 }
-// lest code 
+
+// lest code
 
 func CanJump(input []uint) bool {
 	if len(input) == 0 {
@@ -32,7 +33,7 @@ func CanJump(input []uint) bool {
 	for len(queue) > 0 {
 		pos := queue[0]
 		queue = queue[1:]
-
+		// input1 := []uint{2, 3, 1, 1, 4}
 		if int(input[pos])+pos == n-1 {
 			return true
 		}
